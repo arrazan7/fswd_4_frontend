@@ -15,8 +15,8 @@
 
 <body class="font-poppins">
     <nav class="flex justify-between px-20 py-4 shadow-md fixed top-0 left-0 right-0 z-[2] bg-white">
-        <a href="https://atourin.com/" target="_blank"><svg data-v-05599172="" id="color"
-                xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 0 145.55 39.37">
+        <a href="{{ route('home') }}"><svg data-v-05599172="" id="color" xmlns="http://www.w3.org/2000/svg"
+                height="40px" viewBox="0 0 145.55 39.37">
                 <g data-v-05599172="" fill="#a855f7" stroke="none">
                     <path data-v-05599172=""
                         d="M52.91,12.17h4.19V28.61h-4.19v-1.74c-.82,.77-1.64,1.32-2.46,1.65-.82,.34-1.72,.51-2.68,.51-2.16,0-4.02-.82-5.6-2.47-1.57-1.65-2.36-3.69-2.36-6.14s.76-4.62,2.29-6.24c1.52-1.62,3.37-2.43,5.55-2.43,1,0,1.94,.19,2.82,.56,.88,.37,1.69,.93,2.44,1.68v-1.81Zm-4.41,3.38c-1.3,0-2.37,.45-3.23,1.35-.86,.9-1.29,2.06-1.29,3.47s.44,2.59,1.31,3.51c.87,.92,1.95,1.37,3.22,1.37s2.41-.45,3.27-1.35c.87-.9,1.3-2.08,1.3-3.54s-.43-2.59-1.3-3.47c-.87-.89-1.96-1.33-3.29-1.33Z">
@@ -268,31 +268,27 @@
         </div>
         <div class="grid grid-cols-4 gap-5 my-10">
             @forelse ($data as $json)
-                @if (Session::has('access_token'))
-                    <a href="{{ route('order', ['id_travel' => $json['id'], 'id_user' => $profile['id']]) }}">
-                    @else
-                        <a href="{{ route('login_page') }}">
-                @endif
-                <div class="rounded-lg">
-                    <img src="http://127.0.0.1:8000/storage/travel/{{ $json['photo'] }}"
-                        class="w-full h-48 rounded-lg object-cover object-center" />
-                    <p class="text-xs text-slate-500 mt-2">
-                        <i class="fa-solid fa-plane-departure" style="color: #eab308">
-                            {{ $json['departure'] }}</i>
-                        go to {{ $json['destination'] }}
-                    </p>
-                    <p class="text-base text-slate-800 font-semibold">
-                        {{ $json['name'] }}
-                    </p>
-                    <div class="text-right">
-                        <p class="inline-block py-1 px-2 bg-purple-800 rounded-lg text-white">
-                            Rp<?php echo number_format($json['price'], 0, ',', '.'); ?>
+                <a href="{{ route('create_booking', ['id_travel' => $json['id']]) }}">
+                    <div class="rounded-lg">
+                        <img src="http://127.0.0.1:8000/storage/travel/{{ $json['photo'] }}"
+                            class="w-full h-48 rounded-lg object-cover object-center" />
+                        <p class="text-xs text-slate-500 mt-2">
+                            <i class="fa-solid fa-plane-departure" style="color: #eab308">
+                                {{ $json['departure'] }}</i>
+                            go to {{ $json['destination'] }}
                         </p>
+                        <p class="text-base text-slate-800 font-semibold">
+                            {{ $json['name'] }}
+                        </p>
+                        <div class="text-right">
+                            <p class="inline-block py-1 px-2 bg-purple-800 rounded-lg text-white">
+                                Rp<?php echo number_format($json['price'], 0, ',', '.'); ?>
+                            </p>
+                        </div>
                     </div>
-                </div>
                 </a>
             @empty
-                <div class="text-xl text-center text-red-600 font-bold">
+                <div class="col-span-4 text-xl text-center text-red-600 font-bold">
                     Data Paket Destinasi belum Tersedia.
                 </div>
             @endforelse
