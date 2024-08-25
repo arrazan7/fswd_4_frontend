@@ -37,12 +37,13 @@ class BookingController extends Controller
     public function create(String $id_travel)
     {
         $accessToken = session()->get('access_token');
-        $response = Http::withHeaders([
+        $responseProfile = Http::withHeaders([
             'Authorization' => "Bearer {$accessToken}",
         ])->get('http://localhost:8000/api/show-user');
 
-        if ($response->ok()) {
-            return view('create_booking', compact('id_travel'));
+        if ($responseProfile->ok()) {
+            $profile = $responseProfile->json()['data'];
+            return view('create_booking', compact('id_travel', 'profile'));
         } else {
             // Handle potential token-related errors (e.g., expired token)
             session()->forget('access_token'); // Clear token on error
