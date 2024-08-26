@@ -6,7 +6,17 @@ export default {
         "./resources/**/*.vue",
     ],
     theme: {
-        extend: {},
+        extend: {
+            keyframes: {
+                zoom: {
+                    "0%": { transform: "scale(0.1)" },
+                    "100%": { transform: "scale(1)" },
+                },
+            },
+            animation: {
+                zoom: "zoom 0.6s",
+            },
+        },
     },
     plugins: [],
 };

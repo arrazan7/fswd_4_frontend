@@ -183,25 +183,35 @@
         </div>
         <div class="grid grid-cols-4 gap-5 my-10">
             @forelse ($data as $json)
-                <a href="{{ route('create_booking', ['id_travel' => $json['id']]) }}">
-                    <div class="rounded-lg">
-                        <img src="http://127.0.0.1:8000/storage/travel/{{ $json['photo'] }}"
-                            class="w-full h-48 rounded-lg object-cover object-center" />
-                        <p class="text-xs text-slate-500 mt-2">
-                            <i class="fa-solid fa-plane-departure" style="color: #eab308">
-                                {{ $json['departure'] }}</i>
-                            go to {{ $json['destination'] }}
-                        </p>
-                        <p class="text-base text-slate-800 font-semibold">
-                            {{ $json['name'] }}
-                        </p>
-                        <div class="text-right">
-                            <p class="inline-block py-1 px-2 bg-purple-800 rounded-lg text-white">
-                                Rp<?php echo number_format($json['price'], 0, ',', '.'); ?>
-                            </p>
-                        </div>
+                <div class="relative rounded-lg overflow-hidden group">
+                    <div src="http://127.0.0.1:8000/storage/travel/{{ $json['photo'] }}" alt="{{ $json['name'] }}"
+                        onclick="showModal(this)"
+                        class="absolute cursor-pointer top-0 right-0 translate-x-full -translate-y-full w-24 h-24 bg-yellow-400 z-[2] -rotate-45 group-hover:translate-x-1/2 group-hover:-translate-y-1/2 transition-transform duration-500 delay-500">
+                        <i class="fa-solid fa-magnifying-glass rotate-45 text-3xl mt-8 ml-1"></i>
                     </div>
-                </a>
+                    <a href="{{ route('create_booking', ['id_travel' => $json['id']]) }}">
+                        <div class="rounded-lg">
+                            <div class="w-full h-48 rounded-lg overflow-hidden">
+                                <img id="img{{ $json['id'] }}"
+                                    src="http://127.0.0.1:8000/storage/travel/{{ $json['photo'] }}"
+                                    class="w-full h-full object-cover object-center scale-125 group-hover:scale-100 transition-transform duration-500" />
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2">
+                                <i class="fa-solid fa-plane-departure" style="color: #eab308">
+                                    {{ $json['departure'] }}</i>
+                                go to {{ $json['destination'] }}
+                            </p>
+                            <p class="text-base text-slate-800 font-semibold">
+                                {{ $json['name'] }}
+                            </p>
+                            <div class="text-right">
+                                <p class="inline-block py-1 px-2 bg-purple-800 rounded-lg text-white">
+                                    Rp<?php echo number_format($json['price'], 0, ',', '.'); ?>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             @empty
                 <div class="col-span-4 text-xl text-center text-red-600 font-bold">
                     Data Paket Destinasi belum Tersedia.
@@ -209,6 +219,17 @@
             @endforelse
         </div>
     </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="hidden fixed z-[5] pt-24 left-0 top-0 w-full h-full overflow-auto bg-black">
+        <span onclick="closeModal()"
+            class="absolute top-4 right-9 text-slate-400 text-3xl font-bold duration-300 hover:text-slate-100 hover:no-underline hover:cursor-pointer focus:text-slate-100 focus:no-underline focus:cursor-pointer">&times;</span>
+        <img class="m-auto block w-full max-w-[1000px] animate-zoom" id="imgModal">
+        <div id="caption"
+            class="m-auto text-4xl block w-full max-w-[1000px] text-center text-slate-200 py-3 h-36 animate-zoom">
+        </div>
+    </div>
+
     <script src="https://kit.fontawesome.com/1fe05764da.js" crossorigin="anonymous"></script>
     <script>
         // Membuka atau menutup dropdown berdasarkan elemen yang diklik
@@ -261,6 +282,30 @@
             checkboxes.forEach((checkbox) => {
                 checkbox.checked = false;
             });
+        }
+    </script>
+    <script>
+        function showModal(element) {
+            // Get the modal
+            var modal = document.getElementById('myModal');
+            modal.style.display = "block";
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            var modalImg = document.getElementById("imgModal");
+            var captionText = document.getElementById("caption");
+
+            var src = element.getAttribute('src');
+            var alt = element.getAttribute('alt');
+            modalImg.src = src;
+            captionText.innerHTML = alt;
+
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        function closeModal() {
+            // Get the modal
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
         }
     </script>
 @endsection
