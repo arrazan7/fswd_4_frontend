@@ -38,7 +38,9 @@ Route::post('/registerAccount', [UserController::class, 'storeRegister'])->name(
 Route::post('/auth', [UserController::class, 'authenticate'])->name('authentication');
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-Route::post('/profileupdate/{id}', [UserController::class, 'update'])->name('profileupdate');
+Route::post('/update-profile/{id}', [UserController::class, 'update'])->name('update_profile');
+Route::get('/edit-photo/{id}', [UserController::class, 'edit'])->name('edit_photo');
+Route::post('/update-photo', [UserController::class, 'updatePhoto'])->name('update_photo');
 Route::get('/create-booking/{id_travel}', [BookingController::class, 'create'])->name('create_booking');
 Route::post('/confirm', [BookingController::class, 'confirm'])->name('confirm');
 Route::post('/store-booking', [BookingController::class, 'store'])->name('store_booking');

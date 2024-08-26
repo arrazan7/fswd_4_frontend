@@ -8,7 +8,8 @@
             <div class="relative my-10">
                 <img src="http://127.0.0.1:8000/storage/profile/{{ $profile['photo'] }}"
                     class="w-40 h-40 object-cover object-center rounded-full" />
-                <a href="" class="absolute bottom-0 right-0 w-10 h-10 bg-blue-500 rounded-full" title="Edit Foto">
+                <a href="{{ route('edit_photo', ['id' => $profile['id']]) }}"
+                    class="absolute bottom-0 right-0 w-10 h-10 bg-blue-500 rounded-full" title="Edit Foto">
                     <i class="absolute fa-solid fa-pen text-xl left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
                         style="color: #ffffff;"></i>
                 </a>
@@ -28,7 +29,7 @@
             </a>
         </div>
         <div class="col-span-9 rounded-lg shadow-lg h-fit flex flex-col p-8">
-            <form action="{{ route('profileupdate', ['id' => $profile['id']]) }}" method="POST">
+            <form action="{{ route('update_profile', ['id' => $profile['id']]) }}" method="POST">
                 @csrf
                 <div class="grid grid-cols-2 gap-8 mb-2">
                     <div>

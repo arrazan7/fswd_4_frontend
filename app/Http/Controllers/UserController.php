@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+use function PHPSTORM_META\type;
+
 class UserController extends Controller
 {
     // This method will show login page
@@ -19,7 +21,6 @@ class UserController extends Controller
         return view('register');
     }
 
-    // This method will show register page
     public function profile()
     {
         $accessToken = session()->get('access_token');
@@ -179,15 +180,6 @@ class UserController extends Controller
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$accessToken}",
         ])->get('http://localhost:8000/api/profile');
-
-        // if ($response -> ok()) {
-        //     $profile = $response -> json()['data'];
-        //     return view('layouts.dashboard-nav', compact('profile'));
-        // } else {
-        //     // Handle potential token-related errors (e.g., expired token)
-        //     session() -> forget('access_token'); // Clear token on error
-        //     return redirect() -> route('login_akun') -> with('error', 'Your session has expired. Please log in again.');
-        // }
     }
 
     /**
@@ -195,7 +187,76 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $accessToken = session()->get('access_token');
+
+        $responseProfile = Http::withHeaders([
+            'Authorization' => "Bearer {$accessToken}",
+        ])->get('http://localhost:8000/api/show-user');
+
+        if ($responseProfile->ok()) {
+            $profile = $responseProfile->json()['data'];
+
+            if ($profile['role'] == 'admin') {
+                // return redirect() -> route('dashboard');
+                return view('update_photo', compact('profile'));
+            } elseif ($profile['role'] == 'public') {
+                return view('update_photo', compact('profile'));
+            }
+        } else {
+            session()->forget('access_token'); // Clear token from session
+            return redirect()->route('home');
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updatePhoto(Request $request)
+    {
+        //validate form
+        $request->validate([
+            'id' => 'required|numeric',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png|max:5000'
+        ]);
+
+        // Ambil data input dari form
+        $data = [
+            'id' => $request->input('id')
+        ];
+
+        // Siapkan permintaan multipart
+        $multipart = [];
+
+        // Tambahkan $data ke multipart
+        foreach ($data as $key => $value) {
+            $multipart[] = [
+                'name' => $key,
+                'contents' => $value
+            ];
+        }
+
+        // Tambahkan file ke multipart jika ada
+        if ($request->hasFile('photo')) {
+            $multipart[] = [
+                'name' => 'photo',
+                'contents' => fopen($request->file('photo')->getRealPath(), 'r'),
+                'filename' => $request->file('photo')->getClientOriginalName()
+            ];
+        }
+
+        // Kirim data ke Laravel API
+        $response = Http::asMultipart()->post('http://localhost:8000/api/update-photo', $multipart);
+
+        // Proses respons dari API
+        if ($response->ok()) {
+            // Data berhasil dikirimkan
+            session()->flash('alert', 'Foto berhasil diperbarui.');
+            return redirect()->route('profile')->with(['success' => 'Foto Berhasil Diperbarui!']);
+        } else {
+            // Terjadi kesalahan saat mengirim data
+            session()->flash('alert', 'Foto gagal diperbarui.');
+            return redirect()->route('profile')->with(['failed' => 'Foto Gagal Diperbarui!']);
+        }
     }
 
     /**
